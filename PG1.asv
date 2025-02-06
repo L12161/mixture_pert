@@ -60,9 +60,6 @@ fun1 = @(x) alpha*(exp(x)./((exp(x)-1).^2)); % symmetric
 fun2 = @(b) alpha*((b-b.^2)./((0.5-b).^2)) + 1; % a = 0.5
 
 myEpsilon = [0.5:0.5:4];
-% epsilon values starting from 0.5 to 4. Hence, for each of the epsilon
-% values, we will generate 5% of epsilon, 5% of 1.2* epsilon and 90% of
-% 2*epsilon cases from the user base 
 N_epsilon = length(myEpsilon);
 % epsilon values from 0 to 4 with 0.5 increment 
 
@@ -70,11 +67,9 @@ N_epsilon = length(myEpsilon);
 for i = 1:N_epsilon
     epsilon = myEpsilon(i);
     temp = W*epsilon;
-    % here temp will containt 1 , 1.2, 2 times epsilon 
     
     result(1,i) = N_loc*exp(epsilon/2)./((exp(epsilon/2)-1).^2);
-    a = ones(N_lev,1)*exp(epsilon/2)/(exp(epsilon/2)+1);
-    b = 1-a;
+    a = ones(N_lev,1)*exp(epsilon/2)/(exp(epsilon/2)+1); b = 1-a;
     [MSE(1,i), ~] = actual_MSE(a,b,data,N_loc,W_list);
     
     result(2,i) = N_loc*4*exp(epsilon)./((exp(epsilon)-1).^2)+1;
