@@ -12,7 +12,6 @@ UB = [ones(N_loc,1); 0.5*ones(N_loc,1)];
 % x0 refers to the initial guess for the parameters. we start with all a
 % values to be 0.5 and all b values to be 1/(1+exp(min epsilon))
 x0 = [0.5*ones(N_loc,1); 1/(1+exp(min(W)))*ones(N_loc,1)];
-disp(x0)
 
 options = optimoptions('fmincon','Algorithm','sqp');
 [X,FVAL,EXITFLAG] = fmincon(fun,x0,[],[],[],[],LB,UB,c,options);

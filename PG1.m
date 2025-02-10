@@ -50,8 +50,8 @@ data = generate_powlaw(N_user,N_loc);
 % used for actual MSE measurements 
 
 
-fun0 = @(x) alpha*(( x(N_lev+1:end) - x(N_lev+1:end).^2 )./( (x(1:N_lev)-x(N_lev+1:end)).^2 ))...
-    + max((1-x(1:N_lev)-x(N_lev+1:end))./(x(1:N_lev)-x(N_lev+1:end)));
+fun0 = @(x) alpha*( (x(N_lev+1:end) - x(N_lev+1:end).^2) ./ ( (x(1:N_lev)-x(N_lev+1:end)).^2 ) )...
+    + max( (1-x(1:N_lev)-x(N_lev+1:end)) ./ (x(1:N_lev)-x(N_lev+1:end)) );
 % ai -> x(1:N_lev) 
 % bi -> x(N_lev+1:end)
 % mi -> alpha 
@@ -66,7 +66,9 @@ myEpsilon = [0.5:0.5:4];
 N_epsilon = length(myEpsilon);
 % epsilon values from 0 to 4 with 0.5 increment 
 
-
+beta_values = [];
+a_values = [];
+b_values = [];
 for i = 1:N_epsilon
     epsilon = myEpsilon(i);
     temp = W*epsilon;
@@ -91,21 +93,33 @@ for i = 1:N_epsilon
     % 3 values from a, 3 from b 
     [MSE_min(1,i), ~] = actual_MSE(a,b,data,N_loc,W_list);  
 
-    fun3 = @(x)  (x(2*N_lev+1:end))*( (  numel(unique(data))-2+exp(min(temp)) )./(exp(min(temp))-1).^2 )  ...
-    + (1 - x(2*N_lev+1:end)) * (alpha *(( x(N_lev+1:2*N_lev) - x(N_lev+1:2*N_lev).^2 )./( (x(1:N_lev)-x(N_lev+1:2*N_lev)).^2 ))...
-    + max((1-x(1:N_lev)-x(N_lev+1:2*N_lev))./(x(1:N_lev)-x(N_lev+1:2*N_lev))));
-    
+    betaa = (1 - x(2*N_lev+1:end));  alphaa = x(2*N_lev+1:end); %alphaa is a bit different than alpha. it's more like 1-betaa
+    % term1
+    term1_num = numel(unique(data)) -2+exp((temp));     
+    term1_den = (exp((temp))-1).^2 ;
+    % term2
+    term2_num = alpha * ( betaa.*x(N_lev+1:2*N_lev) - betaa.*x(N_lev+1:2*N_lev).^2 ); 
+    term2_den = (x(1:N_lev)-x(N_lev+1:2*N_lev)).^2 ;
+    % term3
+    term3_num = betaa - betaa.*x(1:N_lev) - betaa.*x(N_lev+1:2*N_lev);
+    term3_den = x(1:N_lev)-x(N_lev+1:2*N_lev);
+    %function
+    fun3 = @(x)  (term1_num./term1_den)*alphaa  +  term2_num./term2_den +  max(term3_num./term3_den);
     % ai -> x(1:N_lev) 
     % bi -> x(N_lev+1:2*N_lev)
     % Beta -> x(2*N_lev+1:end)
     % mi -> alpha 
 
     [X, result_min(4,i)] = min_opt3(temp,fun3);     % what is the X here? result_min was used to generate the emperical reading on  graphs 
-    Xmin0(:,i) = X;  
-    %a = X(1:N_lev);
-    %b = X((N_lev+1):end);
+    %Xmin0(:,i) = X;  
+    a = X(1:N_lev);
+    b = X(N_lev+1:2*N_lev);
+    a_values = [a_values;a];
+    b_values = [b_values;b];
+    beta_values = [beta_values;X(2*N_lev+1:end)];
+    
     %% 3 values from a, 3 from b 
-    %[MSE_min(4,i), ~] = actual_MSE(a,b,data,N_loc,W_list);
+    [MSE_min(4,i), ~] = actual_MSE(a,b,data,N_loc,W_list);
     
     [X, result_min(2,i)] = min_opt1(temp,fun1); 
     Xmin1(:,i) = X;
@@ -118,9 +132,6 @@ for i = 1:N_epsilon
     a = 0.5*ones(N_lev,1); 
     b = X;
     [MSE_min(3,i), ~] = actual_MSE(a,b,data,N_loc,W_list);
-
-
-
   
 end
 
@@ -133,14 +144,18 @@ plot(myEpsilon,MSE(1,:),'-o','Color',Color(1,:)); hold on;
 plot(myEpsilon,MSE(2,:),'-s','Color',Color(2,:)); hold on;
 plot(myEpsilon,MSE_min(1,:),'-^','Color',Color(3,:)); hold on; 
 plot(myEpsilon,MSE_min(2,:),'-*','Color',Color(4,:)); hold on; 
-plot(myEpsilon,MSE_min(3,:),'-d','Color',Color(5,:)); hold on; 
+plot(myEpsilon,MSE_min(3,:),'-d','Color',Color(5,:)); hold on;
+%plot(myEpsilon,MSE_min(4,:),'-p','Color',Color(5,:)); hold on;
 % dashed lines are emperical and solid lines are theoretical. The chunk
 % above is for theoretical solid lines. 
+%% Plot of Emperical MSE
 plot(myEpsilon,result(1,:),'-.o','Color',Color(1,:)); hold on;
 plot(myEpsilon,result(2,:),'-.s','Color',Color(2,:)); hold on;
 plot(myEpsilon,result_min(1,:),'-.^','Color',Color(3,:)); hold on; 
 plot(myEpsilon,result_min(2,:),'-.*','Color',Color(4,:)); hold on; 
 plot(myEpsilon,result_min(3,:),'-.d','Color',Color(5,:)); hold on; 
+plot(myEpsilon,result_min(4,:),'-.p','Color',Color(5,:)); hold on; 
+%% 
 
 
 
