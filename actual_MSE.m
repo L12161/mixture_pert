@@ -1,10 +1,14 @@
 function [MSE,RE] = actual_MSE(a_list,b_list,data,N_loc,W_list)
-
+%w list will contain the priv lvl for the users. There should be 90% lvl3 s
+%5% lvl 2s and 5% lvl 1s 
 repeat = 10;
 N_user = length(data);
 
 tab_true = tabulate(data);
+% creates a table where the percentage of every entry showing up is
+% presented 
 count_true = tab_true(:,2);
+% count_true holds the true frequency of occurance of the different classes
 MSE = zeros(1,repeat);
 RE = zeros(N_loc,repeat);
 

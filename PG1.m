@@ -60,13 +60,14 @@ fun1 = @(x) alpha*(exp(x)./((exp(x)-1).^2)); % symmetric
 fun2 = @(b) alpha*((b-b.^2)./((0.5-b).^2)) + 1; % a = 0.5
 
 myEpsilon = [0.5:0.5:4];
+%myEpsilon = [0.5];
 % epsilon values starting from 0.5 to 4. Hence, for each of the epsilon
 % values, we will generate 5% of epsilon, 5% of 1.2* epsilon and 90% of
 % 2*epsilon cases from the user base 
 N_epsilon = length(myEpsilon);
 % epsilon values from 0 to 4 with 0.5 increment 
 
-beta_values = [];
+alpha_values = [];
 a_values = [];
 b_values = [];
 for i = 1:N_epsilon
@@ -79,6 +80,7 @@ for i = 1:N_epsilon
     b = 1-a;
     [MSE(1,i), ~] = actual_MSE(a,b,data,N_loc,W_list);
     
+    % result 2 deals with OUE
     result(2,i) = N_loc*4*exp(epsilon)./((exp(epsilon)-1).^2)+1;
     a = ones(N_lev,1)*0.5; 
     b = ones(N_lev,1)/(exp(epsilon)+1);
@@ -94,29 +96,30 @@ for i = 1:N_epsilon
     [MSE_min(1,i), ~] = actual_MSE(a,b,data,N_loc,W_list);  
 
     %function
-    fun3 = @(x)  ( (numel(unique(data)) -2+exp((temp)))  ...
+    fun3 = @(x)  sum(x(2*N_lev+1:end))* ( (numel(unique(data)) -2 +exp(epsilon))  ...
         ./ ...
-        ((exp((temp))-1).^2) )*(x(2*N_lev+1:end))...
+        ((exp(epsilon)-1).^2) )...
         +...
-        (alpha * ( betaa.*x(N_lev+1:2*N_lev) - betaa.*x(N_lev+1:2*N_lev).^2 )) ...
+        alpha*((( ((1 - x(2*N_lev+1:end)) ).*x(N_lev+1:2*N_lev) - ((1 - x(2*N_lev+1:end))).*x(N_lev+1:2*N_lev).^2 )) ...
         ./ ...
-        ((x(1:N_lev)-x(N_lev+1:2*N_lev)).^2)...
+        ((x(1:N_lev)-x(N_lev+1:2*N_lev)).^2))...
         + ...
         max( ((1 - x(2*N_lev+1:end)) - (1 - x(2*N_lev+1:end)).*x(1:N_lev) - (1 - x(2*N_lev+1:end)).*x(N_lev+1:2*N_lev)) ...
         ./ ...
         (x(1:N_lev)-x(N_lev+1:2*N_lev)) );
+    % f([1;1;1;2;2;2;3;3;3])
     % ai -> x(1:N_lev) 
     % bi -> x(N_lev+1:2*N_lev)
     % Beta -> x(2*N_lev+1:end)
     % mi -> alpha 
 
-    [X, result_min(4,i)] = min_opt3(temp,fun3);     % what is the X here? result_min was used to generate the emperical reading on  graphs 
+    [X, result_min(4,i)] = min_opt3(temp,fun3, (numel(unique(data))));     % what is the X here? result_min was used to generate the emperical reading on  graphs 
     %Xmin0(:,i) = X;  
     a = X(1:N_lev);
     b = X(N_lev+1:2*N_lev);
     a_values = [a_values;a];
     b_values = [b_values;b];
-    beta_values = [beta_values;X(2*N_lev+1:end)];
+    alpha_values = [alpha_values;X(2*N_lev+1:end)];
     
     %% 3 values from a, 3 from b 
     [MSE_min(4,i), ~] = actual_MSE(a,b,data,N_loc,W_list);
@@ -160,7 +163,7 @@ plot(myEpsilon,result_min(4,:),'-.p','Color',Color(5,:)); hold on;
 
 
 legend('RAPPOR','OUE','IDUE-opt0','IDUE-opt1','IDUE-opt2');
-yticks([25 50 100 200 400]); 
+yticks([0 25 50 100 200 400]); 
 xlim([1,3]);
 ylim([15,450]);
 xlabel('$\epsilon$'); ylabel('MSE');

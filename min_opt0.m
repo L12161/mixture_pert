@@ -13,7 +13,7 @@ UB = [ones(N_loc,1); 0.5*ones(N_loc,1)];
 % values to be 0.5 and all b values to be 1/(1+exp(min epsilon))
 x0 = [0.5*ones(N_loc,1); 1/(1+exp(min(W)))*ones(N_loc,1)];
 
-options = optimoptions('fmincon','Algorithm','sqp');
+options = optimoptions('fmincon','Algorithm','interior-point');
 [X,FVAL,EXITFLAG] = fmincon(fun,x0,[],[],[],[],LB,UB,c,options);
 
 

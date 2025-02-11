@@ -20,7 +20,7 @@ LB = zeros(N_loc,1);
 x0 = min(W)*ones(N_loc,1)/2;
 
 
-options = optimoptions('fmincon','Algorithm','sqp');
+options = optimoptions('fmincon','Algorithm','interior-point');
 [X,FVAL,EXITFLAG] = fmincon(fun,x0,A,b,[],[],LB,[],[],options);
 
 
