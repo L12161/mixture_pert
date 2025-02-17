@@ -12,8 +12,8 @@ N_loc = length(W);
 c = @(x) nonlcon(x,N_loc,W,d);         
 
 % probably upper bound and lower bound
-LB = [0.3*ones(N_loc,1); zeros(N_loc,1); zeros(N_loc,1); zeros(N_loc,1); zeros(1,1)];    
-UB = [ones(N_loc,1); 0.3*ones(N_loc,1); ones(N_loc,1); ones(N_loc,1); ones(1,1)];
+LB = [0.5*ones(N_loc,1); zeros(N_loc,1); zeros(N_loc,1); zeros(N_loc,1); zeros(1,1)];    
+UB = [ones(N_loc,1); 0.5*ones(N_loc,1); ones(N_loc,1); ones(N_loc,1); ones(1,1)];
 
 % x0 refers to the initial guess for the parameters. we start with all a
 % values to be 0.5 and all b values to be 1/(1+exp(min epsilon))
