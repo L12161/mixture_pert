@@ -59,7 +59,7 @@ fun0 = @(x) alpha*( (x(N_lev+1:end) - x(N_lev+1:end).^2) ./ ( (x(1:N_lev)-x(N_le
 fun1 = @(x) alpha*(exp(x)./((exp(x)-1).^2)); % symmetric
 fun2 = @(b) alpha*((b-b.^2)./((0.5-b).^2)) + 1; % a = 0.5
 
-myEpsilon = [0.5:0.5:4];
+myEpsilon = [0.25:0.25:4];
 %myEpsilon = [0.5];
 % epsilon values starting from 0.5 to 4. Hence, for each of the epsilon
 % values, we will generate 5% of epsilon, 5% of 1.2* epsilon and 90% of
@@ -95,10 +95,11 @@ for i = 1:N_epsilon
     % 3 values from a, 3 from b 
     [MSE_min(1,i), ~] = actual_MSE(a,b,data,N_loc,W_list);  
 
+
     %function
-    fun3 = @(x)  sum(x(2*N_lev+1:end))* ( (numel(unique(data)) -2 +exp(epsilon))  ...
-        ./ ...
-        ((exp(epsilon)-1).^2) )...
+    p = exp(temp) ./ (exp(temp)+numel(unique(data))-1);
+    q = 1 ./ (exp(temp)+numel(unique(data))-1);
+    fun3 = @(x)  x(2*N_lev+1:end)*sum((p.*(1-p))./(p-q).^2) ...
         +...
         alpha*((( ((1 - x(2*N_lev+1:end)) ).*x(N_lev+1:2*N_lev) - ((1 - x(2*N_lev+1:end))).*x(N_lev+1:2*N_lev).^2 )) ...
         ./ ...
@@ -107,10 +108,12 @@ for i = 1:N_epsilon
         max( ((1 - x(2*N_lev+1:end)) - (1 - x(2*N_lev+1:end)).*x(1:N_lev) - (1 - x(2*N_lev+1:end)).*x(N_lev+1:2*N_lev)) ...
         ./ ...
         (x(1:N_lev)-x(N_lev+1:2*N_lev)) );
+
     % f([1;1;1;2;2;2;3;3;3])
+    % paper notation -> MATLAB Variable name
     % ai -> x(1:N_lev) 
     % bi -> x(N_lev+1:2*N_lev)
-    % Beta -> x(2*N_lev+1:end)
+    % Alpha -> x(2*N_lev+1:end)
     % mi -> alpha 
 
     [X, result_min(4,i)] = min_opt3(temp,fun3, (numel(unique(data))));     % what is the X here? result_min was used to generate the emperical reading on  graphs 
@@ -138,16 +141,16 @@ for i = 1:N_epsilon
   
 end
 
-figure;
+figure('Position',[100,100,1000,800]);
 ah1 = TightPlots(1, 1, 500,[10 7],[80,80],[50,20],[70,10],'pixels');
 axes(ah1(1));
 
 
-plot(myEpsilon,MSE(1,:),'-o','Color',Color(1,:)); hold on; 
-plot(myEpsilon,MSE(2,:),'-s','Color',Color(2,:)); hold on;
-plot(myEpsilon,MSE_min(1,:),'-^','Color',Color(3,:)); hold on; 
-plot(myEpsilon,MSE_min(2,:),'-*','Color',Color(4,:)); hold on; 
-plot(myEpsilon,MSE_min(3,:),'-d','Color',Color(5,:)); hold on;
+% plot(myEpsilon,MSE(1,:),'-o','Color',Color(1,:)); hold on; 
+% plot(myEpsilon,MSE(2,:),'-s','Color',Color(2,:)); hold on;
+% plot(myEpsilon,MSE_min(1,:),'-^','Color',Color(3,:)); hold on; 
+% plot(myEpsilon,MSE_min(2,:),'-*','Color',Color(4,:)); hold on; 
+% plot(myEpsilon,MSE_min(3,:),'-d','Color',Color(5,:)); hold on;
 %plot(myEpsilon,MSE_min(4,:),'-p','Color',Color(5,:)); hold on;
 % dashed lines are emperical and solid lines are theoretical. The chunk
 % above is for theoretical solid lines. 
@@ -157,12 +160,12 @@ plot(myEpsilon,result(2,:),'-.s','Color',Color(2,:)); hold on;
 plot(myEpsilon,result_min(1,:),'-.^','Color',Color(3,:)); hold on; 
 plot(myEpsilon,result_min(2,:),'-.*','Color',Color(4,:)); hold on; 
 plot(myEpsilon,result_min(3,:),'-.d','Color',Color(5,:)); hold on; 
-plot(myEpsilon,result_min(4,:),'-.p','Color',Color(5,:)); hold on; 
+plot(myEpsilon,result_min(4,:),'-p','Color',Color(5,:)); hold on; 
 %% 
 
 
 
-legend('RAPPOR','OUE','IDUE-opt0','IDUE-opt1','IDUE-opt2');
+legend('RAPPOR','OUE','IDUE-opt0','IDUE-opt1','IDUE-opt2','Mixture IDUE-GRR');
 yticks([0 25 50 100 200 400]); 
 xlim([1,3]);
 ylim([15,450]);
