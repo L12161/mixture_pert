@@ -42,11 +42,12 @@ Alpha = x(4*N_loc+1 : end);
 p_all = x(2*N_loc+1 : 3*N_loc);
 q_all = x(3*N_loc+1 : 4*N_loc);
 c = zeros(N_loc^2+3,1);
+ceq = zeros(N_loc,1);
 for i = 1:N_loc
 
     p = p_all(i);
     q = q_all(i);
-
+    ceq(i) = p_all(i) + q_all(i)*(d-1) - 1;
     for j = 1:N_loc
         %p = exp(W(i))/(exp(W(i)) + d -1);
         %q = 1 / (exp(W(i)) + d -1);
@@ -58,7 +59,8 @@ for i = 1:N_loc
         %c(row(i,j)) = Alpha(i)*(p/q)*(d-1)*b(i)*(1-a(j)) + (1-Alpha(i))*a(i)*(1-b(j)) - exp(min(W(i),W(j)))*b(i)*(1-a(j)); %  equation 9 constraints, with the form LHS <= 0 
     end
     c(row(N_loc,N_loc)+i,1) = p - q*exp( min(W(i),W(j)) );
+
 end 
 
-ceq = [];
+
 end
