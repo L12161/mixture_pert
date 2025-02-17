@@ -70,6 +70,8 @@ N_epsilon = length(myEpsilon);
 alpha_values = [];
 a_values = [];
 b_values = [];
+p_values = [];
+q_values = [];
 for i = 1:N_epsilon
     epsilon = myEpsilon(i);
     temp = W*epsilon;
@@ -97,23 +99,25 @@ for i = 1:N_epsilon
 
 
     %function
-    p = exp(temp) ./ (exp(temp)+numel(unique(data))-1);
-    q = 1 ./ (exp(temp)+numel(unique(data))-1);
-    fun3 = @(x)  x(2*N_lev+1:end)*sum((p.*(1-p))./(p-q).^2) ...
+    %p = exp(temp) ./ (exp(temp)+numel(unique(data))-1);
+    %q = 1 ./ (exp(temp)+numel(unique(data))-1);
+    fun3 = @(x)  x(4*N_lev+1)*sum((x(2*N_lev+1 : 3*N_lev).*(1-x(2*N_lev+1 : 3*N_lev)))./(x(2*N_lev+1 : 3*N_lev)-x(3*N_lev+1 : 4*N_lev)).^2) ...
         +...
-        alpha*((( ((1 - x(2*N_lev+1:end)) ).*x(N_lev+1:2*N_lev) - ((1 - x(2*N_lev+1:end))).*x(N_lev+1:2*N_lev).^2 )) ...
+        alpha*((( ((1 - x(4*N_lev+1:end)) ).*x(N_lev+1:2*N_lev) - ((1 - x(4*N_lev+1:end))).*x(N_lev+1:2*N_lev).^2 )) ...
         ./ ...
         ((x(1:N_lev)-x(N_lev+1:2*N_lev)).^2))...
         + ...
-        max( ((1 - x(2*N_lev+1:end)) - (1 - x(2*N_lev+1:end)).*x(1:N_lev) - (1 - x(2*N_lev+1:end)).*x(N_lev+1:2*N_lev)) ...
+        max( ((1 - x(4*N_lev+1:end)) - (1 - x(4*N_lev+1:end)).*x(1:N_lev) - (1 - x(4*N_lev+1:end)).*x(N_lev+1:2*N_lev)) ...
         ./ ...
         (x(1:N_lev)-x(N_lev+1:2*N_lev)) );
 
     % f([1;1;1;2;2;2;3;3;3])
     % paper notation -> MATLAB Variable name
-    % ai -> x(1:N_lev) 
-    % bi -> x(N_lev+1:2*N_lev)
-    % Alpha -> x(2*N_lev+1:end)
+    %       ai ->  x(1 : N_lev) 
+    % bi ->  x(N_lev+1 : 2*N_lev)
+    % p -> x(2*N_lev+1 : 3*N_lev)
+    % q -> x(3*N_lev+1 : 4*N_lev)
+    % Alpha -> x(4*N_lev+1)
     % mi -> alpha 
 
     [X, result_min(4,i)] = min_opt3(temp,fun3, (numel(unique(data))));     % what is the X here? result_min was used to generate the emperical reading on  graphs 
@@ -122,7 +126,9 @@ for i = 1:N_epsilon
     b = X(N_lev+1:2*N_lev);
     a_values = [a_values;a];
     b_values = [b_values;b];
-    alpha_values = [alpha_values;X(2*N_lev+1:end)];
+    alpha_values = [alpha_values;X(4*N_lev+1:end)];
+    p_values = [p_values; X(2*N_lev+1 : 3*N_lev)];
+    q_values = [q_values; X(3*N_lev+1 : 4*N_lev)];
     
     %% 3 values from a, 3 from b 
     [MSE_min(4,i), ~] = actual_MSE(a,b,data,N_loc,W_list);
