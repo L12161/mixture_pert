@@ -33,7 +33,7 @@ W_list = [];
 for j = 1:N_lev
     W_list = [W_list; j*ones(alpha(j),1)];
 end     
-
+tha
 %  W_list contains 5 1's 5 2's and 90 3's after this loop 
 W_list = W_list(randperm(N_loc));   
 % randomly taken 100 samples from the previous W  
@@ -48,8 +48,8 @@ end
 % found no use of W_index 
 
 %data = generate_powlaw(N_user,N_loc);
-load("C:\Users\maiso\Downloads\tensor_unperturbed.mat");
-data = unperturbed_feature_tensor_data;
+load("C:\Users\maiso\Downloads\tensor.mat");
+data = tensor_data;
 
 % used for actual MSE measurements 
 
