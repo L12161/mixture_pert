@@ -19,7 +19,8 @@ close all;
 
 N_lev = 3;  % the different stages of elsilon values
 W = [1 1.2 2]; % these terms are? 
-N_loc = 4020;    
+%N_loc = 4020;    % use this for fb dataset works 
+N_loc = 100; 
 % used as upper bound when generating synthetic data 
 N_user = 100000; 
 % no of synthetic users 
@@ -47,9 +48,10 @@ for j = 1:N_lev
 end
 % found no use of W_index 
 
-%data = generate_powlaw(N_user,N_loc);
-load("C:\Users\maiso\Downloads\tensor_unperturbed.mat");
-data = unperturbed_feature_tensor_data;
+data = generate_powlaw(N_user,N_loc);
+% comment out the following , if you wish to use the fb dataset 
+%load("C:\Users\maiso\Downloads\tensor_unperturbed.mat");
+%data = unperturbed_feature_tensor_data;
 
 % used for actual MSE measurements 
 
@@ -62,7 +64,7 @@ fun0 = @(x) alpha*( (x(N_lev+1:end) - x(N_lev+1:end).^2) ./ ( (x(1:N_lev)-x(N_le
 fun1 = @(x) alpha*(exp(x)./((exp(x)-1).^2)); % symmetric
 fun2 = @(b) alpha*((b-b.^2)./((0.5-b).^2)) + 1; % a = 0.5
 
-myEpsilon = [0.25:0.25:4];
+myEpsilon = [1:0.5:6];
 %myEpsilon = [0.5];
 % epsilon values starting from 0.5 to 4. Hence, for each of the epsilon
 % values, we will generate 5% of epsilon, 5% of 1.2* epsilon and 90% of
@@ -83,13 +85,13 @@ for i = 1:N_epsilon
     result(1,i) = N_loc*exp(epsilon/2)./((exp(epsilon/2)-1).^2);
     a = ones(N_lev,1)*exp(epsilon/2)/(exp(epsilon/2)+1);
     b = 1-a;
-    %[MSE(1,i), ~] = actual_MSE(a,b,data,N_loc,W_list);
+    [MSE(1,i), ~] = actual_MSE(a,b,data,N_loc,W_list);
     
     % result 2 deals with OUE
     result(2,i) = N_loc*4*exp(epsilon)./((exp(epsilon)-1).^2)+1;
     a = ones(N_lev,1)*0.5; 
     b = ones(N_lev,1)/(exp(epsilon)+1);
-    %[MSE(2,i), ~] = actual_MSE(a,b,data,N_loc,W_list);
+    [MSE(2,i), ~] = actual_MSE(a,b,data,N_loc,W_list);
     % actual MSE is generating the theoretical MSE values whereas the
     % minopt is generating the experical values. 
 
@@ -98,7 +100,7 @@ for i = 1:N_epsilon
     a = X(1:N_lev);
     b = X((N_lev+1):end);
     % 3 values from a, 3 from b 
-    %[MSE_min(1,i), ~] = actual_MSE(a,b,data,N_loc,W_list);  
+    [MSE_min(1,i), ~] = actual_MSE(a,b,data,N_loc,W_list);  
 
 
     %function
@@ -127,6 +129,9 @@ for i = 1:N_epsilon
     %Xmin0(:,i) = X;  
     a = X(1:N_lev);
     b = X(N_lev+1:2*N_lev);
+    p = X(2*N_lev+1:3*N_lev);
+    q = X(3*N_lev+1:4*N_lev);
+    Alpha = X(4*N_lev+1); 
     a_values = [a_values;a];
     b_values = [b_values;b];
     alpha_values = [alpha_values;X(4*N_lev+1:end)];
@@ -134,19 +139,19 @@ for i = 1:N_epsilon
     q_values = [q_values; X(3*N_lev+1 : 4*N_lev)];
     
     %% 3 values from a, 3 from b 
-    %[MSE_min(4,i), ~] = actual_MSE(a,b,data,N_loc,W_list);
+    [MSE_min(4,i), ~] = actual_MSE_2(a,b,data,N_loc,W_list,p,q,Alpha);
     
     [X, result_min(2,i)] = min_opt1(temp,fun1); 
     Xmin1(:,i) = X;
     a = exp(X)./(1+exp(X)); 
     b = 1./(1+exp(X));
-    %[MSE_min(2,i), ~] = actual_MSE(a,b,data,N_loc,W_list);
+    [MSE_min(2,i), ~] = actual_MSE(a,b,data,N_loc,W_list);
     
     [X, result_min(3,i)] = min_opt2(temp,fun2); 
     Xmin2(:,i) = X;
     a = 0.5*ones(N_lev,1); 
     b = X;
-    %[MSE_min(3,i), ~] = actual_MSE(a,b,data,N_loc,W_list);
+    [MSE_min(3,i), ~] = actual_MSE(a,b,data,N_loc,W_list);
   
 end
 
@@ -155,21 +160,23 @@ ah1 = TightPlots(1, 1, 500,[10 7],[80,80],[50,20],[70,10],'pixels');
 axes(ah1(1));
 
 
-% plot(myEpsilon,MSE(1,:),'-o','Color',Color(1,:)); hold on; 
-% plot(myEpsilon,MSE(2,:),'-s','Color',Color(2,:)); hold on;
-% plot(myEpsilon,MSE_min(1,:),'-^','Color',Color(3,:)); hold on; 
-% plot(myEpsilon,MSE_min(2,:),'-*','Color',Color(4,:)); hold on; 
-% plot(myEpsilon,MSE_min(3,:),'-d','Color',Color(5,:)); hold on;
-%plot(myEpsilon,MSE_min(4,:),'-p','Color',Color(5,:)); hold on;
+plot(myEpsilon,MSE(1,:),'-o','Color',Color(1,:)); hold on; 
+plot(myEpsilon,MSE(2,:),'-s','Color',Color(2,:)); hold on;
+plot(myEpsilon,MSE_min(1,:),'-^','Color',Color(3,:)); hold on; 
+plot(myEpsilon,MSE_min(2,:),'-*','Color',Color(4,:)); hold on; 
+plot(myEpsilon,MSE_min(3,:),'-d','Color',Color(5,:)); hold on;
+plot(myEpsilon,MSE_min(4,:),'-p','Color',Color(5,:)); hold on;
 % dashed lines are emperical and solid lines are theoretical. The chunk
 % above is for theoretical solid lines. 
 %% Plot of Emperical MSE
-plot(myEpsilon,result(1,:),'-.o','Color',Color(1,:)); hold on;
-plot(myEpsilon,result(2,:),'-.s','Color',Color(2,:)); hold on;
-plot(myEpsilon,result_min(1,:),'-.^','Color',Color(3,:)); hold on; 
-plot(myEpsilon,result_min(2,:),'-.*','Color',Color(4,:)); hold on; 
-plot(myEpsilon,result_min(3,:),'-.d','Color',Color(5,:)); hold on; 
-plot(myEpsilon,result_min(4,:),'-p','Color',Color(5,:)); hold on; 
+
+
+% plot(myEpsilon,result(1,:),'-.o','Color',Color(1,:)); hold on;
+% plot(myEpsilon,result(2,:),'-.s','Color',Color(2,:)); hold on;
+% plot(myEpsilon,result_min(1,:),'-.^','Color',Color(3,:)); hold on; 
+% plot(myEpsilon,result_min(2,:),'-.*','Color',Color(4,:)); hold on; 
+% plot(myEpsilon,result_min(3,:),'-.d','Color',Color(5,:)); hold on; 
+% plot(myEpsilon,result_min(4,:),'-p','Color',Color(5,:)); hold on; 
 %% 
 
 
