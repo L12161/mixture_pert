@@ -64,7 +64,7 @@ fun0 = @(x) alpha*( (x(N_lev+1:end) - x(N_lev+1:end).^2) ./ ( (x(1:N_lev)-x(N_le
 fun1 = @(x) alpha*(exp(x)./((exp(x)-1).^2)); % symmetric
 fun2 = @(b) alpha*((b-b.^2)./((0.5-b).^2)) + 1; % a = 0.5
 
-myEpsilon = [0.1];
+myEpsilon = [0.5:0.5:4];
 %myEpsilon = [0.5];
 % epsilon values starting from 0.5 to 4. Hence, for each of the epsilon
 % values, we will generate 5% of epsilon, 5% of 1.2* epsilon and 90% of
@@ -125,7 +125,7 @@ for i = 1:N_epsilon
     % Alpha -> x(4*N_lev+1)
     % mi -> alpha 
 
-    [X, result_min(4,i)] = min_opt3(temp,fun3, 2);     % what is the X here? result_min was used to generate the emperical reading on  graphs 
+    [X, result_min(4,i)] = min_opt3(temp,fun3, (numel(unique(data))));     % what is the X here? result_min was used to generate the emperical reading on  graphs 
     %Xmin0(:,i) = X;  
     a = X(1:N_lev);
     b = X(N_lev+1:2*N_lev);
