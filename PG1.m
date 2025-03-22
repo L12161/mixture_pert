@@ -48,7 +48,6 @@ end
 
 data = generate_powlaw(N_user,N_loc);
 % used for actual MSE measurements 
-thamenn
 
 fun0 = @(x) alpha*( (x(N_lev+1:end) - x(N_lev+1:end).^2) ./ ( (x(1:N_lev)-x(N_lev+1:end)).^2 ) )...
     + max( (1-x(1:N_lev)-x(N_lev+1:end)) ./ (x(1:N_lev)-x(N_lev+1:end)) );
