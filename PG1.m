@@ -49,6 +49,10 @@ end
 % found no use of W_index 
 
 data = generate_powlaw(N_user,N_loc);
+
+% numel(unique(data))
+% thamenn
+
 % comment out the following , if you wish to use the fb dataset 
 %load("C:\Users\maiso\Downloads\tensor_unperturbed.mat");
 %data = unperturbed_feature_tensor_data;
@@ -64,7 +68,7 @@ fun0 = @(x) alpha*( (x(N_lev+1:end) - x(N_lev+1:end).^2) ./ ( (x(1:N_lev)-x(N_le
 fun1 = @(x) alpha*(exp(x)./((exp(x)-1).^2)); % symmetric
 fun2 = @(b) alpha*((b-b.^2)./((0.5-b).^2)) + 1; % a = 0.5
 
-myEpsilon = [0.5:0.5:4];
+myEpsilon = [1];
 %myEpsilon = [0.5];
 % epsilon values starting from 0.5 to 4. Hence, for each of the epsilon
 % values, we will generate 5% of epsilon, 5% of 1.2* epsilon and 90% of
@@ -160,24 +164,24 @@ ah1 = TightPlots(1, 1, 500,[10 7],[80,80],[50,20],[70,10],'pixels');
 axes(ah1(1));
 
 
-plot(myEpsilon,MSE(1,:),'-o','Color',Color(1,:)); hold on; 
-plot(myEpsilon,MSE(2,:),'-s','Color',Color(2,:)); hold on;
-plot(myEpsilon,MSE_min(1,:),'-^','Color',Color(3,:)); hold on; 
-plot(myEpsilon,MSE_min(2,:),'-*','Color',Color(4,:)); hold on; 
-plot(myEpsilon,MSE_min(3,:),'-d','Color',Color(5,:)); hold on;
-plot(myEpsilon,MSE_min(4,:),'-p','Color',Color(5,:)); hold on;
+% plot(myEpsilon,MSE(1,:),'-o','Color',Color(1,:)); hold on; 
+% plot(myEpsilon,MSE(2,:),'-s','Color',Color(2,:)); hold on;
+% plot(myEpsilon,MSE_min(1,:),'-^','Color',Color(3,:)); hold on; 
+% plot(myEpsilon,MSE_min(2,:),'-*','Color',Color(4,:)); hold on; 
+% plot(myEpsilon,MSE_min(3,:),'-d','Color',Color(5,:)); hold on;
+% plot(myEpsilon,MSE_min(4,:),'-p','Color',Color(5,:)); hold on;
 % dashed lines are emperical and solid lines are theoretical. The chunk
-% above is for theoretical solid lines. 
+% above is for emperical solid lines. 
 %% Plot of Emperical MSE
 
 
-% plot(myEpsilon,result(1,:),'-.o','Color',Color(1,:)); hold on;
-% plot(myEpsilon,result(2,:),'-.s','Color',Color(2,:)); hold on;
-% plot(myEpsilon,result_min(1,:),'-.^','Color',Color(3,:)); hold on; 
-% plot(myEpsilon,result_min(2,:),'-.*','Color',Color(4,:)); hold on; 
-% plot(myEpsilon,result_min(3,:),'-.d','Color',Color(5,:)); hold on; 
-% plot(myEpsilon,result_min(4,:),'-p','Color',Color(5,:)); hold on; 
-%% 
+plot(myEpsilon,result(1,:),'-.o','Color',Color(1,:)); hold on;
+plot(myEpsilon,result(2,:),'-.s','Color',Color(2,:)); hold on;
+plot(myEpsilon,result_min(1,:),'-.^','Color',Color(3,:)); hold on; 
+plot(myEpsilon,result_min(2,:),'-.*','Color',Color(4,:)); hold on; 
+plot(myEpsilon,result_min(3,:),'-.d','Color',Color(5,:)); hold on; 
+plot(myEpsilon,result_min(4,:),'-p','Color',Color(5,:)); hold on; 
+%% Plot of Theoretical MSE
 
 
 
@@ -189,3 +193,4 @@ xlabel('$\epsilon$'); ylabel('MSE');
 set(gca, 'YScale', 'log');
 
 %text(1.05, 22,{'Power-law Distribution', '(m=100)'});
+

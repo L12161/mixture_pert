@@ -1,6 +1,6 @@
 function randnum = generate_powlaw(num,ub)
 
-alpha = 15;
+alpha = 10;
 temp = rand(1,num);
 
 temp = (1-temp).^(1/-(alpha+1))-1;

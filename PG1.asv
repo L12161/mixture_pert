@@ -19,7 +19,8 @@ close all;
 
 N_lev = 3;  % the different stages of elsilon values
 W = [1 1.2 2]; % these terms are? 
-   
+%N_loc = 4020;    % use this for fb dataset works 
+N_loc = 100; 
 % used as upper bound when generating synthetic data 
 N_user = 100000; 
 % no of synthetic users 
@@ -47,9 +48,14 @@ for j = 1:N_lev
 end
 % found no use of W_index 
 
-%data = generate_powlaw(N_user,N_loc);
-load("C:\Users\maiso\Downloads\tensor_unperturbed.mat");
-data = unperturbed_feature_tensor_data;
+data = generate_powlaw(N_user,N_loc);
+
+% numel(unique(data))
+% thamenn
+
+% comment out the following , if you wish to use the fb dataset 
+%load("C:\Users\maiso\Downloads\tensor_unperturbed.mat");
+%data = unperturbed_feature_tensor_data;
 
 % used for actual MSE measurements 
 
@@ -62,7 +68,7 @@ fun0 = @(x) alpha*( (x(N_lev+1:end) - x(N_lev+1:end).^2) ./ ( (x(1:N_lev)-x(N_le
 fun1 = @(x) alpha*(exp(x)./((exp(x)-1).^2)); % symmetric
 fun2 = @(b) alpha*((b-b.^2)./((0.5-b).^2)) + 1; % a = 0.5
 
-myEpsilon = [1:0.5:6];
+myEpsilon = [1];
 %myEpsilon = [0.5];
 % epsilon values starting from 0.5 to 4. Hence, for each of the epsilon
 % values, we will generate 5% of epsilon, 5% of 1.2* epsilon and 90% of
@@ -79,7 +85,7 @@ for i = 1:N_epsilon
     epsilon = myEpsilon(i);
     temp = W*epsilon;
     % here temp will containt 1 , 1.2, 2 times epsilon 
-    
+
     result(1,i) = N_loc*exp(epsilon/2)./((exp(epsilon/2)-1).^2);
     a = ones(N_lev,1)*exp(epsilon/2)/(exp(epsilon/2)+1);
     b = 1-a;
@@ -158,14 +164,14 @@ ah1 = TightPlots(1, 1, 500,[10 7],[80,80],[50,20],[70,10],'pixels');
 axes(ah1(1));
 
 
-plot(myEpsilon,MSE(1,:),'-o','Color',Color(1,:)); hold on; 
-plot(myEpsilon,MSE(2,:),'-s','Color',Color(2,:)); hold on;
-plot(myEpsilon,MSE_min(1,:),'-^','Color',Color(3,:)); hold on; 
-plot(myEpsilon,MSE_min(2,:),'-*','Color',Color(4,:)); hold on; 
-plot(myEpsilon,MSE_min(3,:),'-d','Color',Color(5,:)); hold on;
-plot(myEpsilon,MSE_min(4,:),'-p','Color',Color(5,:)); hold on;
+% plot(myEpsilon,MSE(1,:),'-o','Color',Color(1,:)); hold on; 
+% plot(myEpsilon,MSE(2,:),'-s','Color',Color(2,:)); hold on;
+% plot(myEpsilon,MSE_min(1,:),'-^','Color',Color(3,:)); hold on; 
+% plot(myEpsilon,MSE_min(2,:),'-*','Color',Color(4,:)); hold on; 
+% plot(myEpsilon,MSE_min(3,:),'-d','Color',Color(5,:)); hold on;
+% plot(myEpsilon,MSE_min(4,:),'-p','Color',Color(5,:)); hold on;
 % dashed lines are emperical and solid lines are theoretical. The chunk
-% above is for theoretical solid lines. 
+% above is for emperical solid lines. 
 %% Plot of Emperical MSE
 
 
@@ -175,7 +181,7 @@ plot(myEpsilon,result_min(1,:),'-.^','Color',Color(3,:)); hold on;
 plot(myEpsilon,result_min(2,:),'-.*','Color',Color(4,:)); hold on; 
 plot(myEpsilon,result_min(3,:),'-.d','Color',Color(5,:)); hold on; 
 plot(myEpsilon,result_min(4,:),'-p','Color',Color(5,:)); hold on; 
-%% 
+%% Plot of Theoretical MSE
 
 
 
