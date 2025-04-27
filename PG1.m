@@ -62,7 +62,7 @@ fun0 = @(x) alpha*( (x(N_lev+1:end) - x(N_lev+1:end).^2) ./ ( (x(1:N_lev)-x(N_le
 fun1 = @(x) alpha*(exp(x)./((exp(x)-1).^2)); % symmetric
 fun2 = @(b) alpha*((b-b.^2)./((0.5-b).^2)) + 1; % a = 0.5
 
-myEpsilon = [0.25:0.25:4];
+myEpsilon = [2:0.25:6];
 %myEpsilon = [0.5];
 % epsilon values starting from 0.5 to 4. Hence, for each of the epsilon
 % values, we will generate 5% of epsilon, 5% of 1.2* epsilon and 90% of
@@ -160,7 +160,7 @@ axes(ah1(1));
 % plot(myEpsilon,MSE_min(1,:),'-^','Color',Color(3,:)); hold on; 
 % plot(myEpsilon,MSE_min(2,:),'-*','Color',Color(4,:)); hold on; 
 % plot(myEpsilon,MSE_min(3,:),'-d','Color',Color(5,:)); hold on;
-%plot(myEpsilon,MSE_min(4,:),'-p','Color',Color(5,:)); hold on;
+% plot(myEpsilon,MSE_min(4,:),'-p','Color',Color(5,:)); hold on;
 % dashed lines are emperical and solid lines are theoretical. The chunk
 % above is for theoretical solid lines. 
 %% Plot of Emperical MSE
