@@ -46,7 +46,7 @@ for j = 1:N_lev
 end
 % found no use of W_index 
 
-data = generate_powlaw(N_user,N_loc);
+data = generate_exponential(N_user,N_loc);
 % used for actual MSE measurements 
 
 fun0 = @(x) alpha*( (x(N_lev+1:end) - x(N_lev+1:end).^2) ./ ( (x(1:N_lev)-x(N_lev+1:end)).^2 ) )...
@@ -150,31 +150,31 @@ figure('Position',[100,100,1000,800]);
 ah1 = TightPlots(1, 1, 500,[10 7],[80,80],[50,20],[70,10],'pixels');
 axes(ah1(1));
 
-
+%% Plot for Empirical 
 % plot(myEpsilon,MSE(1,:),'-o','Color',Color(1,:)); hold on; 
 % plot(myEpsilon,MSE(2,:),'-s','Color',Color(2,:)); hold on;
 % plot(myEpsilon,MSE_min(1,:),'-^','Color',Color(3,:)); hold on; 
 % plot(myEpsilon,MSE_min(2,:),'-*','Color',Color(4,:)); hold on; 
 % plot(myEpsilon,MSE_min(3,:),'-d','Color',Color(5,:)); hold on;
 %plot(myEpsilon,MSE_min(4,:),'-p','Color',Color(5,:)); hold on;
-% dashed lines are emperical and solid lines are theoretical. The chunk
-% above is for theoretical solid lines. 
-%% Plot of Emperical MSE
+
+%% Plot of Theoretical
 plot(myEpsilon,result(1,:),'-.o','Color',Color(1,:)); hold on;
 plot(myEpsilon,result(2,:),'-.s','Color',Color(2,:)); hold on;
 plot(myEpsilon,result_min(1,:),'-.^','Color',Color(3,:)); hold on; 
 plot(myEpsilon,result_min(2,:),'-.*','Color',Color(4,:)); hold on; 
 plot(myEpsilon,result_min(3,:),'-.d','Color',Color(5,:)); hold on; 
-plot(myEpsilon,result_min(4,:),'-p','Color',Color(5,:)); hold on; 
+plot(myEpsilon,result_min(4,:),'-.p','Color',Color(5,:)); hold on; 
 %% 
 
 
 
 legend('RAPPOR','OUE','IDUE-opt0','IDUE-opt1','IDUE-opt2','Mixture IDUE-GRR');
-yticks([0 25 50 100 200 400]); 
-xlim([1,3]);
-ylim([15,450]);
-xlabel('$\epsilon$'); ylabel('MSE');
+yticks([0 10 25 50 100 200 400 800 1600]); 
+xlim([0.5,4]);
+ylim([5,1700]);
+xlabel('$\epsilon$','FontSize',35); ylabel('MSE','FontSize',20);
 set(gca, 'YScale', 'log');
+grid on;
 
 text(1.05, 22,{'Power-law Distribution', '(m=100)'});
