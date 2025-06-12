@@ -46,7 +46,11 @@ for j = 1:N_lev
 end
 % found no use of W_index 
 
-data = generate_exponential(N_user,N_loc);
+%data = generate_exponential(N_user,N_loc);
+data = readtable("C:\Users\maiso\Downloads\pubmed_probabilistic_data.csv")
+% This functions reads the unique epsilon values and the proportions of
+% these epsilon values for every attribute of a given dataset. 
+[unique_vals, props] = analyze_column_entries(data);
 % used for actual MSE measurements 
 
 fun0 = @(x) alpha*( (x(N_lev+1:end) - x(N_lev+1:end).^2) ./ ( (x(1:N_lev)-x(N_lev+1:end)).^2 ) )...
