@@ -1,0 +1,23 @@
+clear all;
+close all;
+clc;
+
+data = readtable("C:\Users\maiso\Downloads\pubmed_probabilistic_data.csv");
+unique_counts = readtable("C:\Users\maiso\Downloads\pubmed_unique_counts.csv");
+[unique_epsilon_vals, props] = reading_distribution(data);
+
+for i = 2:length(props) % loop was started from 0 as the first column contained the user number, which is irrelevent. If the user number was not converted in the reading 
+    % distribution function for a custom dataset, this value might need to
+    % be modified. 
+    [a_values, b_values, alpha_values, p_values, q_values] = privacy_parameters(unique_epsilon_vals{i}', props{i}', unique_counts{i-1,:}(2));
+    
+    %disp(alpha_values)
+    % Ensure row vectors
+    a_values = a_values(:)';
+    b_values = b_values(:)';
+    p_values = p_values(:)';
+    q_values = q_values(:)';
+
+    
+end
+
