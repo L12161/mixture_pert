@@ -2,8 +2,8 @@ clear all;
 close all;
 clc;
 
-data = readtable("C:\Users\maiso\Downloads\pubmed_probabilistic_data.csv");
-unique_counts = readtable("C:\Users\maiso\Downloads\pubmed_unique_counts.csv");
+data = readtable("C:\Users\maiso\Downloads\epsilons for pubmed\AFTER CORRECTIONS 1\epsilon 5\pubmed_probabilistic_data.csv");
+unique_counts = readtable("C:\Users\maiso\Downloads\epsilons for pubmed\AFTER CORRECTIONS 1\epsilon 5\pubmed_unique_counts.csv");
 [unique_epsilon_vals, props] = reading_distribution(data);
 
 all_rows = [];
