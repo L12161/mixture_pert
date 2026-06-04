@@ -2,8 +2,8 @@ clear all;
 close all;
 clc;
 
-data = readtable("pubmed_probabilistic_data.csv");  # PLEASE ENTER THE PUBMED PROBABILITY DATA DIRECTORY HERE 
-unique_counts = readtable("pubmed_unique_counts.csv");  #UNIQUE COUNTS FROM THE PUBMED DATA 
+data = readtable("pubmed_probabilistic_data.csv");  % PLEASE ENTER THE PUBMED/CORA PROBABILITY DATA DIRECTORY HERE 
+unique_counts = readtable("pubmed_unique_counts.csv");  % UNIQUE COUNTS FROM THE PUBMED/CORA DATA 
 [unique_epsilon_vals, props] = reading_distribution(data);
 
 all_rows = [];
