@@ -2,8 +2,8 @@ clear all;
 close all;
 clc;
 
-data = readtable("C:\Users\maiso\Downloads\epsilons for pubmed\AFTER CORRECTIONS 1\epsilon 5\pubmed_probabilistic_data.csv");
-unique_counts = readtable("C:\Users\maiso\Downloads\epsilons for pubmed\AFTER CORRECTIONS 1\epsilon 5\pubmed_unique_counts.csv");
+data = readtable("pubmed_probabilistic_data.csv");
+unique_counts = readtable("pubmed_unique_counts.csv");
 [unique_epsilon_vals, props] = reading_distribution(data);
 
 all_rows = [];
@@ -31,7 +31,7 @@ headers = {'a1', 'a2', 'a3', 'b1', 'b2', 'b3', ...
            'p1', 'p2', 'p3', 'q1', 'q2', 'q3'};
 
 % Write to CSV
-csv_filename = 'C:\Users\maiso\Downloads\privacy_parameters_output.csv';
+csv_filename = 'privacy_parameters_output.csv';
 % I'm keping the outputs to download folder 
 fid = fopen(csv_filename, 'w');
 fprintf(fid, '%s,', headers{1:end-1});
