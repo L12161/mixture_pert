@@ -1,9 +1,5 @@
 function ha = TightPlots(Nh, Nw, w, AR, gap, marg_h, marg_w, units)
 
-% Theodoros Michelis, 15 February 2015
-% TUDelft, Aerospace Engineering, Aerodynamics
-% t.michelis@tudelft.nl
-%
 % -------------------------------------------------------------------------
 % D E S C R I P T I O N:
 % tightPlots is a function that allows making single plots or subplots with
