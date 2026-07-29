@@ -8,12 +8,12 @@ optimized per privacy level.
 The code covers three things:
 
 1. **Synthetic experiments** — mean-squared-error (MSE) and L1 comparisons of the
-   mixture mechanism against GRR, UE, and OLH baselines on synthetic data.
-2. **Real-data experiments** — the same comparisons driven by an empirical
-   per-user, per-attribute privacy-budget distribution (PubMed-derived).
-3. **Parameter optimization** — solving for the optimal mechanism parameters
-   (`a, b, alpha, p, q`) at each privacy level, and the RDP-to-DP conversion
-   analysis used for the budget-accounting heatmap.
+   mixture mechanism against GRR, UE, and GRR baselines on synthetic (uniform single attribute and multi-attribute dataset) data.
+2. **Real-data experiments** — the same comparisons driven by an empirical and theoreticl
+   per-user, per-attribute privacy-budget distribution (multi-attribute dataset : UCI Adult Dataset, Single Attribute Dataset:Kosarak and Retail ).
+3. **Heatmap Visualizations** — RDP-to-DP conversion analysis used for the budget-accounting heatmap. THis helps to show how the privacy budget was managed before and after deploying moments accountant. 
+
+There is separate codes for the baseline LDP mechaanisms and the adaptive LDP mechanisms. The baaseline mechanism involves uniform (strongest privacy budget) allocation of privacy budget across all the users, and aadaptive mechanism involves comparison with ID-LDP. 
 
 ---
 
