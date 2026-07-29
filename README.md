@@ -46,11 +46,8 @@ There is separate codes for the baseline LDP mechaanisms and the adaptive LDP me
 │       └── TightPlots.m           figure-layout utility (external; keep attribution header)
 │
 ├── experiments/                Top-level scripts — these are the ones you run.
-│   ├── synthetic_uniform_MSE.m       MSE on uniform synthetic data
-│   ├── synthetic_powerlaw_MSE.m      MSE on power-law synthetic data
-│   ├── real_single_attribute.m       L1 analysis on one real attribute
-│   ├── real_multi_attribute.m        multi-attribute real-data run (no optimization)
-│   ├── build_privacy_parameters.m    loops over real features, writes privacy_parameters_output.csv
+│   ├── adaptive_LDP_mechanism_comparison.m   MSE/L1 comparison for the adaptive (mixture) mechanism — synthetic or real data, set via the domain size matrix
+│   ├── baseline_LDP_mechanism_comparison.m   MSE/L1 comparison for the baseline (uniform-budget) mechanism — synthetic or real data, set via the domain size matrix
 │   └── plot_error_gap.m              plots a pairwise-gap CSV
 │
 ├── notebooks/                  Python / Jupyter analyses.
@@ -88,8 +85,8 @@ After that, every function (e.g. `generate_uniform`, `min_opt3`, `Est_mixture`) 
 callable by name from any script, and you can run any experiment directly:
 
 ```matlab
-synthetic_uniform_MSE        % synthetic uniform-data MSE comparison
-synthetic_powerlaw_MSE       % synthetic power-law-data MSE comparison
+adaptive_LDP_mechanism_comparison    % adaptive (mixture) mechanism, synthetic or real data
+baseline_LDP_mechanism_comparison    % baseline (uniform-budget) mechanism, synthetic or real data
 ```
 
 > The experiment scripts begin with `clear`/`close all`. That clears the workspace
@@ -99,32 +96,20 @@ synthetic_powerlaw_MSE       % synthetic power-law-data MSE comparison
 
 ## Typical workflows
 
-### A. Synthetic experiments (no external data)
+### A. Synthetic or real-data comparison
 
 ```matlab
 setup
-synthetic_uniform_MSE     % or synthetic_powerlaw_MSE
+adaptive_LDP_mechanism_comparison     % or baseline_LDP_mechanism_comparison
 ```
 
-Each script generates synthetic data, optimizes the mixture parameters via the
-`min_opt*` solvers, estimates frequencies with `Est_mixture`, and plots MSE/L1
-against the baselines using `TightPlots`.
+Each script runs the same MSE/L1 comparison pipeline for either synthetic or real
+data — just set the domain size matrix inside the script to switch between the two.
+It generates or loads the data, optimizes the mixture parameters via the `min_opt*`
+solvers, estimates frequencies with `Est_mixture`, and plots MSE/L1 against the
+baselines using `TightPlots`.
 
-### B. Real-data parameter table
-
-1. Place the input CSVs in `data/`:
-   - `pubmed_probabilistic_data.csv` — per-user, per-feature epsilon assignments
-   - `pubmed_unique_counts.csv` — domain size (unique values) per feature
-2. Run:
-   ```matlab
-   setup
-   build_privacy_parameters
-   ```
-   This reads the distribution with `reading_distribution`, calls
-   `privacy_parameters` per feature, and writes `privacy_parameters_output.csv`
-   (columns `a1..a3, b1..b3, alpha1, p1..p3, q1..q3`) to `results/`.
-
-### C. RDP → DP budget heatmap (Python)
+### B. RDP → DP budget heatmap (Python)
 
 Open `notebooks/Heatmap_DP_RDP_DP_conversion.ipynb`. It consumes the three CSVs
 (`pubmed_probabilistic_data.csv`, `privacy_parameters_output.csv`,
@@ -133,32 +118,3 @@ Open `notebooks/Heatmap_DP_RDP_DP_conversion.ipynb`. It consumes the three CSVs
 
 ---
 
-## How the pieces fit together
-
-```
-                       data (epsilon dist.)                synthetic generators
-                              │                          (generate_uniform/…/zipf)
-                              ▼                                     │
-        reading_distribution  ─────────────►  experiment script ◄──┘
-                                                    │
-                                                    ▼
-                              privacy_parameters  +  min_opt0..3   (solve mechanism params)
-                                                    │
-                                                    ▼
-                              Est_mixture  +  actual_MSE           (estimate & score)
-                                                    │
-                                                    ▼
-                              TightPlots                            (figures)
-```
-
-`build_privacy_parameters` (workflow B) produces `privacy_parameters_output.csv`,
-which is the bridge into the Python heatmap notebook (workflow C).
-
----
-
-## Notes
-
-- Input data paths should be **relative** (e.g. `fullfile('data', 'pubmed_probabilistic_data.csv')`)
-  so the code runs on any machine.
-- `TightPlots.m` is third-party; retain its original author/attribution header.
-- MATLAB editor autosave files (`*.asv`) are not source and can be deleted.
